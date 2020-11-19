@@ -5,5 +5,7 @@ class User < ApplicationRecord
   has_many :socials, dependent: :destroy
   has_many :resumes, dependent: :destroy
   has_many :portfolios, dependent: :destroy
+  has_many :testimonials, dependent: :destroy
+
 
 end

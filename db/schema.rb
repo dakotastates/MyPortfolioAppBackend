@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_19_205352) do
+ActiveRecord::Schema.define(version: 2020_11_19_211237) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,6 +82,15 @@ ActiveRecord::Schema.define(version: 2020_11_19_205352) do
     t.index ["user_id"], name: "index_socials_on_user_id"
   end
 
+  create_table "testimonials", force: :cascade do |t|
+    t.string "text"
+    t.string "name"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_testimonials_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "username"
     t.string "password_digest"
@@ -117,5 +126,6 @@ ActiveRecord::Schema.define(version: 2020_11_19_205352) do
   add_foreign_key "resumes", "users"
   add_foreign_key "skills", "resumes"
   add_foreign_key "socials", "users"
+  add_foreign_key "testimonials", "users"
   add_foreign_key "works", "resumes"
 end

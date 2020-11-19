@@ -4,6 +4,8 @@ Rails.application.routes.draw do
       resources :users, only: [:create, :show, :update, :destroy]
       resources :resumes, only: [:create, :show, :update, :destroy]
       resources :portfolios, only: [:create, :show, :update, :destroy]
+      resources :testimonials, only: [:create, :show, :update, :destroy]
+
 
 
       post '/login', to: 'auth#create'
