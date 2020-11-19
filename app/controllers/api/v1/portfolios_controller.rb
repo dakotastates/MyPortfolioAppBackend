@@ -35,7 +35,7 @@ class Api::V1::PortfoliosController < ApplicationController
   private
 
   def portfolio_params
-    params.require(:portfolio).permit( :id)
+    params.require(:portfolio).permit( :id, projects_attributes: [:title, :category, :image, :url])
   end
 
   def find_portfolio

@@ -35,7 +35,7 @@ class Api::V1::ResumesController < ApplicationController
   private
 
   def user_params
-    params.require(:resume).permit( :id, :skillmessage)
+    params.require(:resume).permit( :id, :skillmessage, :user_id, educations_attributes: [:school, :degree, :graducated, :description], works_attributes: [:company, :title, :years, :description], skills_attributes: [:name, :level])
   end
 
   def find_resume

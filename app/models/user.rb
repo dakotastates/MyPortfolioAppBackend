@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+
   has_secure_password
   validates :username, uniqueness: { case_sensitive: false }
   has_many :addresses, dependent: :destroy
@@ -7,5 +8,6 @@ class User < ApplicationRecord
   has_many :portfolios, dependent: :destroy
   has_many :testimonials, dependent: :destroy
 
+  accepts_nested_attributes_for :addresses, :socials
 
 end
