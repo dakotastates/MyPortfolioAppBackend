@@ -1,6 +1,8 @@
 class Api::V1::UsersController < ApplicationController
-  skip_before_action :authorized, only: [:create, :show]
+  skip_before_action :authorized, only: [:create, :show, :update, :profile]
   before_action :find_user, only:[:show, :update, :destroy]
+  before_action :find_social, only:[:update, :destroy]
+
 
   def profile
     render json: { user: UserSerializer.new(current_user) }, status: :accepted
@@ -13,8 +15,50 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def show
-      render json: @user
+      render json: @user.as_json(include: {resume: {
+              include: {
+                educations: {
+                  only: [:id, :school, :degree, :graduated, :description]
+                },
+                works: {
+                    only: [:id, :company, :title, :years, :description]
+                  },
+                skills: {
+                    only: [:id, :name, :level]
+                  },
+              },
+                only: :skillmessage
+        },
+        portfolio: {
+                include: {
+                  projects: {
+                    only: [:id, :title, :category, :image, :url]
+                  }
+                }
+          },
+          testimonials: {
+              only: [:id, :text, :name]
+            },
+
+          address: {
+                only: [:id, :street, :city, :state, :zip]
+            },
+
+          socials: {
+                only: [:id, :name, :url, :className]
+            },
+
+
+        },
+      except: [:username, :password_digest])
+
   end
+
+  # def new
+  #   @user = User.new
+  #   @user.address.build()
+  #
+  # end
 
   def create
     @user = User.create(user_params)
@@ -31,6 +75,12 @@ class Api::V1::UsersController < ApplicationController
   def update
     # byebug
     if @user.update(user_params)
+      @social = @user.socials.build(user_params)
+      if @social.valid?
+        render json: @social
+      else
+        render json:{errors: @social.errors.full_messages}
+      end
       render json: @user
     else
       render json:{errors: @user.errors.full_messages}
@@ -40,10 +90,14 @@ class Api::V1::UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit( :id, :username, :password, :name, :occupation, :description, :image, :bio, :contactmessage, :email, :phone, :website, :resumedownload, addresses_attributes: [:street, :city, :state, :zip], socials_attributes: [:name, :url, :className])
+    params.require(:user).permit( :id, :username, :password, :name, :occupation, :description, :image, :bio, :contactmessage, :email, :phone, :website, :resumedownload, address_attributes: [:street, :city, :state, :zip], socials_attributes: [:name, :url, :className])
   end
 
   def find_user
     @user = User.find_by_id(params[:id])
+  end
+
+  def find_social
+    @social = Social.find_by_id(params[:id])
   end
 end
