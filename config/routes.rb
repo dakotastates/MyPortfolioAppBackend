@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       resources :portfolios, only: [:create, :show, :update, :destroy]
       resources :testimonials, only: [:create, :show, :update, :destroy]
       resources :socials, only: [:create, :show, :update, :destroy]
+      resources :projects, only: [:create, :show, :update, :destroy]
 
 
 
