@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       resources :testimonials, only: [:create, :show, :update, :destroy]
       resources :socials, only: [:create, :show, :update, :destroy]
       resources :projects, only: [:index, :create, :show, :update, :destroy]
+      resources :skills, only: [:index, :create, :show, :update, :destroy]
 
 
 
