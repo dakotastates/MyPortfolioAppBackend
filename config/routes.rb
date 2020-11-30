@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       resources :projects, only: [:index, :create, :show, :update, :destroy]
       resources :skills, only: [:index, :create, :show, :update, :destroy]
       resources :works, only: [:index, :create, :show, :update, :destroy]
+      resources :educations, only: [:index, :create, :show, :update, :destroy]
 
 
 
