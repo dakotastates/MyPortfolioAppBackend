@@ -5,8 +5,7 @@ class CreateEducations < ActiveRecord::Migration[6.0]
       t.string :degree
       t.string :graduated
       t.string :description
-      t.references :resume, null: false, foreign_key: true
-
+      t.belongs_to :user, null: false, foreign_key: true
 
       t.timestamps
     end

@@ -15,42 +15,43 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def show
-      render json: @user.as_json(include: {resume: {
-              include: {
-                educations: {
-                  only: [:id, :school, :degree, :graduated, :description]
-                },
-                works: {
-                    only: [:id, :company, :title, :years, :description]
-                  },
-                skills: {
-                    only: [:id, :name, :level]
-                  },
-              },
-                only: :skillmessage
-        },
-        portfolio: {
-                include: {
-                  projects: {
-                    only: [:id, :title, :category, :image, :url]
-                  }
-                }
-          },
-          testimonials: {
-              only: [:id, :text, :name]
-            },
-
-          address: {
-                only: [:id, :street, :city, :state, :zip]
-            },
-
-          socials: {
-                only: [:id, :name, :url, :className]
-            },
-
-
-        },
-      except: [:username, :password_digest])
+      render json: @user
+      # .as_json(include: {resume: {
+      #         include: {
+      #           educations: {
+      #             only: [:id, :school, :degree, :graduated, :description]
+      #           },
+      #           works: {
+      #               only: [:id, :company, :title, :years, :description]
+      #             },
+      #           skills: {
+      #               only: [:id, :name, :level]
+      #             },
+      #         },
+      #           only: :skillmessage
+      #   },
+      #   portfolio: {
+      #           include: {
+      #             projects: {
+      #               only: [:id, :title, :category, :image, :url]
+      #             }
+      #           }
+      #     },
+      #     testimonials: {
+      #         only: [:id, :text, :name]
+      #       },
+      #
+      #     address: {
+      #           only: [:id, :street, :city, :state, :zip]
+      #       },
+      #
+      #     socials: {
+      #           only: [:id, :name, :url, :className]
+      #       },
+      #
+      #
+      #   },
+      # except: [:username, :password_digest])
 
   end
 
