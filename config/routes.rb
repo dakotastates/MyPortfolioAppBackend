@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       resources :socials, only: [:create, :show, :update, :destroy]
       resources :projects, only: [:index, :create, :show, :update, :destroy]
       resources :skills, only: [:index, :create, :show, :update, :destroy]
+      resources :works, only: [:index, :create, :show, :update, :destroy]
 
 
 

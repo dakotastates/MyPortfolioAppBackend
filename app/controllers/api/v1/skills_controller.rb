@@ -38,7 +38,7 @@ class Api::V1::SkillsController < ApplicationController
     params.require(:skill).permit( :id, :name, :level, :user_id)
   end
 
-  def find_skills
+  def find_skill
     @skill = Skill.find_by_id(params[:id])
   end
 end
