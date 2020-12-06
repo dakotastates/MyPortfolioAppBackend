@@ -4,12 +4,12 @@ Rails.application.routes.draw do
       resources :users, only: [:create, :show, :update, :destroy]
       resources :resumes, only: [:create, :show, :update, :destroy]
       resources :portfolios, only: [:create, :show, :update, :destroy]
-      resources :testimonials, only: [:create, :show, :update, :destroy]
-      resources :socials, only: [:create, :show, :update, :destroy]
-      resources :projects, only: [:index, :create, :show, :update, :destroy]
-      resources :skills, only: [:index, :create, :show, :update, :destroy]
-      resources :works, only: [:index, :create, :show, :update, :destroy]
-      resources :educations, only: [:index, :create, :show, :update, :destroy]
+      resources :testimonials, only: [:index, :create, :update, :destroy]
+      resources :socials, only: [:index, :create, :update, :destroy]
+      resources :projects, only: [:index, :create, :update, :destroy]
+      resources :skills, only: [:index, :create, :update, :destroy]
+      resources :works, only: [:index, :create, :update, :destroy]
+      resources :educations, only: [:index, :create, :update, :destroy]
 
 
 

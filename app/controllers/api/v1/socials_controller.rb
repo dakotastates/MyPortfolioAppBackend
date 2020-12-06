@@ -1,5 +1,5 @@
 class Api::V1::SocialsController < ApplicationController
-  skip_before_action :authorized, only: [:create, :update, :show]
+  skip_before_action :authorized, only: [:index, :create, :update, :show]
   before_action :find_social, only:[:show, :update, :destroy]
 
   def index

@@ -1,7 +1,6 @@
 class Api::V1::UsersController < ApplicationController
   skip_before_action :authorized, only: [:create, :show, :update, :profile]
   before_action :find_user, only:[:show, :update, :destroy]
-  before_action :find_social, only:[:update, :destroy]
 
 
   def profile
@@ -15,7 +14,7 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def show
-      render json: @user
+      render json: user_json(@user)
       # .as_json(include: {resume: {
       #         include: {
       #           educations: {
@@ -76,12 +75,12 @@ class Api::V1::UsersController < ApplicationController
   def update
     # byebug
     if @user.update(user_params)
-      @social = @user.socials.build(user_params)
-      if @social.valid?
-        render json: @social
-      else
-        render json:{errors: @social.errors.full_messages}
-      end
+      # @social = @user.socials.build(user_params)
+      # if @social.valid?
+      #   render json: @social
+      # else
+      #   render json:{errors: @social.errors.full_messages}
+      # end
       render json: @user
     else
       render json:{errors: @user.errors.full_messages}
@@ -90,15 +89,163 @@ class Api::V1::UsersController < ApplicationController
 
   private
 
+  def user_json(user)
+    {
+      id: user.id,
+      name: user.name,
+      occupation: user.occupation,
+      description: user.description,
+      image: user.image,
+      bio: user.bio,
+      contactmessage: user.contactmessage,
+      email: user.email,
+      phone: user.phone,
+      website: user.website,
+      resumedownload: user.resumedownload,
+      errors: user.errors,
+      address: {
+        id: user.address.id,
+        street: user.address.street,
+        city: user.address.street,
+        state: user.address.state,
+        zip: user.address.zip
+      },
+      projects: user.projects.map do |project|
+        {
+          id: project.id,
+          title: project.title,
+          category: project.category,
+          image: project.image,
+          url: project.url
+        }
+      end,
+      socials: user.socials.map do |social|
+        {
+          id: social.id,
+          name: social.name,
+          url: social.url,
+          className: social.className,
+          errors: social.errors,
+          _destroy: social._destroy
+        }
+      end,
+      educations: user.educations.map  do |education|
+        {
+          id: education.id,
+          school: education.school,
+          degree: education.degree,
+          graduated: education.graduated,
+          description: education.description,
+          errors: education.errors,
+          _destroy: education._destroy
+        }
+      end,
+      works: user.works.map do |work|
+        {
+          id: work.id,
+          company: work.company,
+          title: work.title,
+          years: work.years,
+          description: work.description,
+          errors: work.errors,
+          _destroy: work._destroy
+        }
+      end,
+      skills: user.skills.map do |skill|
+        {
+          id: skill.id,
+          name: skill.name,
+          level: skill.level,
+          errors: skill.errors,
+          _destroy: skill._destroy
+        }
+      end,
+      testimonials: user.testimonials.map do |testimonial|
+        {
+          id: testimonial.id,
+          text: testimonial.text,
+          name: testimonial.name,
+          errors: testimonial.errors,
+          _destroy: testimonial._destroy
+        }
+      end
+    }
+
+  end
+
+
   def user_params
-    params.require(:user).permit( :id, :username, :password, :name, :occupation, :description, :image, :bio, :contactmessage, :email, :phone, :website, :resumedownload, address_attributes: [:street, :city, :state, :zip], socials_attributes: [:name, :url, :className])
+    params.require(:user).permit( :id, :username, :password, :name, :occupation, :description, :image, :bio, :contactmessage, :email, :phone, :website, :resumedownload,
+      address_attributes: [:id, :street, :city, :state, :zip],
+      socials_attributes: [:id, :name, :url, :className, :user_id, :_destroy],
+      projects_attributes: [:id, :title, :category, :image, :url, :user_id, :_destroy],
+      educations_attributes: [:id, :school, :degree, :graduated, :description, :user_id, :_destroy],
+      works_attributes: [:id, :company, :title, :years, :description, :user_id, :_destroy],
+      skills_attributes: [:id, :name, :level, :user_id, :_destroy],
+      testimonials_attributes: [:id, :text, :name, :user_id, :_destroy])
   end
 
   def find_user
     @user = User.find_by_id(params[:id])
   end
 
-  def find_social
-    @social = Social.find_by_id(params[:id])
-  end
+
+#   def index
+#   json = Project.all.map do |project|
+#     {
+#       id: project.id,
+#       name: project.name
+#     }
+#   end
+#
+#   render json: json
+# end
+#
+# def show
+#   project = Project.find(params[:id])
+#   render json: project_json(project)
+# end
+#
+# def create
+#   project = Project.new(project_params)
+#   result = project.save
+#   render project_json(project), status: result ? 200 : 422
+# end
+#
+# def update
+#   project = Project.find(params[:id])
+#   project.attributes = project_params
+#   result = project.save
+#   render project_json(project), status: result ? 200 : 422
+# end
+#
+# def destroy
+#   project = Project.find(params[:id])
+#   project.destroy
+#   render json: { result: :ok }
+# end
+#
+# private
+#
+# def project_json(project)
+#   {
+#     id: project.id,
+#     name: project.name,
+#     errors: project.errors,
+#     tasks: project.tasks.map do |task|
+#       {
+#         id: task.id,
+#         title: task.title,
+#         errors: task.errors,
+#         _destroy: task._destroy
+#       }
+#     end
+#   }
+# end
+#
+# def project_params
+#   params
+#   .require(:project)
+#   .permit(:name, tasks_attributes: [:title, :_destroy, :id])
+# end
 end

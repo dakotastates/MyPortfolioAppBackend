@@ -16,7 +16,7 @@ class Api::V1::EducationsController < ApplicationController
     @education = Education.create(education_params)
 
     if @education.valid?
-      render json: { skill: EducationSerializer.new(@education) }, status: :created
+      render json: { education: EducationSerializer.new(@education) }, status: :created
     else
       # render json: { error: 'failed to create user' }, status: :not_acceptable
       render json: { error: @education.errors.full_messages }, status: :not_acceptable

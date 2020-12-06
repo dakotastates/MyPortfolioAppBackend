@@ -15,6 +15,6 @@ class User < ApplicationRecord
 
 
 
-  accepts_nested_attributes_for :address, :socials
+  accepts_nested_attributes_for :address, :socials, :projects, :educations, :works, :skills, :testimonials
 
 end

@@ -17,6 +17,8 @@ class Api::V1::TestimonialsController < ApplicationController
 
     if @testimonial.valid?
       render json: { testimonial: TestimonialSerializer.new(@testimonial) }, status: :created
+      # render json: { user: UserSerializer.new(current_user) }, status: :accepted
+
     else
       # render json: { error: 'failed to create user' }, status: :not_acceptable
       render json: { error: @testimonial.errors.full_messages }, status: :not_acceptable
@@ -35,7 +37,7 @@ class Api::V1::TestimonialsController < ApplicationController
   private
 
   def testimonial_params
-    params.require(:testimonial).permit( :id, :text, :name)
+    params.require(:testimonial).permit( :id, :text, :name, :user_id)
   end
 
   def find_testimonial
