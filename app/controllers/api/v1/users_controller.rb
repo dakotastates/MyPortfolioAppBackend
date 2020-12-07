@@ -74,17 +74,26 @@ class Api::V1::UsersController < ApplicationController
 
   def update
     # byebug
-    if @user.update(user_params)
-      # @social = @user.socials.build(user_params)
-      # if @social.valid?
-      #   render json: @social
-      # else
-      #   render json:{errors: @social.errors.full_messages}
-      # end
-      render json: @user
-    else
-      render json:{errors: @user.errors.full_messages}
-    end
+
+    @user.attributes = user_params
+    result = @user.save
+    render json: user_json(@user), status: result ? 200 : 422
+    # if @user.update(user_params)
+    #   # @social = @user.socials.build(user_params)
+    #   # if @social.valid?
+    #   #   render json: @social
+    #   # else
+    #   #   render json:{errors: @social.errors.full_messages}
+    #   # end
+    #   render json: @user
+    # else
+    #   render json:{errors: @user.errors.full_messages}
+    # end
+  end
+
+  def destroy
+    @user.destroy
+    render json: { result: :ok }
   end
 
   private
@@ -103,23 +112,25 @@ class Api::V1::UsersController < ApplicationController
       website: user.website,
       resumedownload: user.resumedownload,
       errors: user.errors,
-      address: {
+      address_attributes: {
         id: user.address.id,
         street: user.address.street,
         city: user.address.street,
         state: user.address.state,
         zip: user.address.zip
       },
-      projects: user.projects.map do |project|
+      projects_attributes: user.projects.map do |project|
         {
           id: project.id,
           title: project.title,
           category: project.category,
           image: project.image,
-          url: project.url
+          url: project.url,
+          errors: project.errors,
+          _destroy: project._destroy
         }
       end,
-      socials: user.socials.map do |social|
+      socials_attributes: user.socials.map do |social|
         {
           id: social.id,
           name: social.name,
@@ -129,7 +140,7 @@ class Api::V1::UsersController < ApplicationController
           _destroy: social._destroy
         }
       end,
-      educations: user.educations.map  do |education|
+      educations_attributes: user.educations.map  do |education|
         {
           id: education.id,
           school: education.school,
@@ -140,7 +151,7 @@ class Api::V1::UsersController < ApplicationController
           _destroy: education._destroy
         }
       end,
-      works: user.works.map do |work|
+      works_attributes: user.works.map do |work|
         {
           id: work.id,
           company: work.company,
@@ -151,7 +162,7 @@ class Api::V1::UsersController < ApplicationController
           _destroy: work._destroy
         }
       end,
-      skills: user.skills.map do |skill|
+      skills_attributes: user.skills.map do |skill|
         {
           id: skill.id,
           name: skill.name,
@@ -160,7 +171,7 @@ class Api::V1::UsersController < ApplicationController
           _destroy: skill._destroy
         }
       end,
-      testimonials: user.testimonials.map do |testimonial|
+      testimonials_attributes: user.testimonials.map do |testimonial|
         {
           id: testimonial.id,
           text: testimonial.text,
