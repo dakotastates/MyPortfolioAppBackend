@@ -11,6 +11,7 @@ class User < ApplicationRecord
   has_many :skills, dependent: :destroy
   has_many :works, dependent: :destroy
   has_many :educations, dependent: :destroy
+  has_one_attached :featured_image
 
 
 

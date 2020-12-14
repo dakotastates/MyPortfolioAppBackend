@@ -1,94 +1,43 @@
 class Api::V1::UsersController < ApplicationController
   skip_before_action :authorized, only: [:create, :show, :update, :profile]
   before_action :find_user, only:[:show, :update, :destroy]
+  # include Rails.application.routes.url_helpers
 
+  # def profile
+  #   render json: { user: UserSerializer.new(current_user) }, status: :accepted
+  # end
 
-  def profile
-    render json: { user: UserSerializer.new(current_user) }, status: :accepted
-  end
-
-  def index
-    @users = User.all
-    # byebug
-    render json: @users
-  end
+  # def index
+  #   @users = User.all
+  #   render json: @users
+  # end
 
   def show
       render json: user_json(@user)
-      # .as_json(include: {resume: {
-      #         include: {
-      #           educations: {
-      #             only: [:id, :school, :degree, :graduated, :description]
-      #           },
-      #           works: {
-      #               only: [:id, :company, :title, :years, :description]
-      #             },
-      #           skills: {
-      #               only: [:id, :name, :level]
-      #             },
-      #         },
-      #           only: :skillmessage
-      #   },
-      #   portfolio: {
-      #           include: {
-      #             projects: {
-      #               only: [:id, :title, :category, :image, :url]
-      #             }
-      #           }
-      #     },
-      #     testimonials: {
-      #         only: [:id, :text, :name]
-      #       },
-      #
-      #     address: {
-      #           only: [:id, :street, :city, :state, :zip]
-      #       },
-      #
-      #     socials: {
-      #           only: [:id, :name, :url, :className]
-      #       },
-      #
-      #
-      #   },
-      # except: [:username, :password_digest])
 
   end
 
-  # def new
-  #   @user = User.new
-  #   @user.address.build()
+
+  # def create
+  #   @user = User.create(user_params)
   #
+  #   if @user.valid?
+  #     @token = encode_token({ user_id: @user.id })
+  #     render json: { user: UserSerializer.new(@user), jwt: @token }, status: :created
+  #   else
+  #     # render json: { error: 'failed to create user' }, status: :not_acceptable
+  #     render json: { error: @user.errors.full_messages }, status: :not_acceptable
+  #   end
   # end
-
-  def create
-    @user = User.create(user_params)
-
-    if @user.valid?
-      @token = encode_token({ user_id: @user.id })
-      render json: { user: UserSerializer.new(@user), jwt: @token }, status: :created
-    else
-      # render json: { error: 'failed to create user' }, status: :not_acceptable
-      render json: { error: @user.errors.full_messages }, status: :not_acceptable
-    end
-  end
 
   def update
     # byebug
 
     @user.attributes = user_params
+    # byebug
     result = @user.save
     render json: user_json(@user), status: result ? 200 : 422
-    # if @user.update(user_params)
-    #   # @social = @user.socials.build(user_params)
-    #   # if @social.valid?
-    #   #   render json: @social
-    #   # else
-    #   #   render json:{errors: @social.errors.full_messages}
-    #   # end
-    #   render json: @user
-    # else
-    #   render json:{errors: @user.errors.full_messages}
-    # end
+
   end
 
   def destroy
@@ -105,13 +54,17 @@ class Api::V1::UsersController < ApplicationController
       occupation: user.occupation,
       description: user.description,
       image: user.image,
+      # featured_image()
+      # image: image(user),
+      # featured_image: featured_image,
+      # featured_image: rails_blob_url(user.featured_image),
       bio: user.bio,
       contactmessage: user.contactmessage,
       email: user.email,
       phone: user.phone,
       website: user.website,
       resumedownload: user.resumedownload,
-      errors: user.errors,
+      # errors: user.errors,
       address_attributes: {
         id: user.address.id,
         street: user.address.street,
@@ -136,7 +89,7 @@ class Api::V1::UsersController < ApplicationController
           name: social.name,
           url: social.url,
           className: social.className,
-          errors: social.errors,
+          # errors: social.errors,
           _destroy: social._destroy
         }
       end,
@@ -147,7 +100,7 @@ class Api::V1::UsersController < ApplicationController
           degree: education.degree,
           graduated: education.graduated,
           description: education.description,
-          errors: education.errors,
+          # errors: education.errors,
           _destroy: education._destroy
         }
       end,
@@ -158,7 +111,7 @@ class Api::V1::UsersController < ApplicationController
           title: work.title,
           years: work.years,
           description: work.description,
-          errors: work.errors,
+          # errors: work.errors,
           _destroy: work._destroy
         }
       end,
@@ -167,7 +120,7 @@ class Api::V1::UsersController < ApplicationController
           id: skill.id,
           name: skill.name,
           level: skill.level,
-          errors: skill.errors,
+          # errors: skill.errors,
           _destroy: skill._destroy
         }
       end,
@@ -176,7 +129,7 @@ class Api::V1::UsersController < ApplicationController
           id: testimonial.id,
           text: testimonial.text,
           name: testimonial.name,
-          errors: testimonial.errors,
+          # errors: testimonial.errors,
           _destroy: testimonial._destroy
         }
       end
@@ -186,7 +139,7 @@ class Api::V1::UsersController < ApplicationController
 
 
   def user_params
-    params.require(:user).permit( :id, :username, :password, :name, :occupation, :description, :image, :bio, :contactmessage, :email, :phone, :website, :resumedownload,
+    params.require(:user).permit( :id, :username, :password, :name, :occupation, :description, :image, :featured_image, :bio, :contactmessage, :email, :phone, :website, :resumedownload,
       address_attributes: [:id, :street, :city, :state, :zip],
       socials_attributes: [:id, :name, :url, :className, :user_id, :_destroy],
       projects_attributes: [:id, :title, :category, :image, :url, :user_id, :_destroy],
@@ -200,63 +153,4 @@ class Api::V1::UsersController < ApplicationController
     @user = User.find_by_id(params[:id])
   end
 
-
-#   def index
-#   json = Project.all.map do |project|
-#     {
-#       id: project.id,
-#       name: project.name
-#     }
-#   end
-#
-#   render json: json
-# end
-#
-# def show
-#   project = Project.find(params[:id])
-#   render json: project_json(project)
-# end
-#
-# def create
-#   project = Project.new(project_params)
-#   result = project.save
-#   render project_json(project), status: result ? 200 : 422
-# end
-#
-# def update
-#   project = Project.find(params[:id])
-#   project.attributes = project_params
-#   result = project.save
-#   render project_json(project), status: result ? 200 : 422
-# end
-#
-# def destroy
-#   project = Project.find(params[:id])
-#   project.destroy
-#   render json: { result: :ok }
-# end
-#
-# private
-#
-# def project_json(project)
-#   {
-#     id: project.id,
-#     name: project.name,
-#     errors: project.errors,
-#     tasks: project.tasks.map do |task|
-#       {
-#         id: task.id,
-#         title: task.title,
-#         errors: task.errors,
-#         _destroy: task._destroy
-#       }
-#     end
-#   }
-# end
-#
-# def project_params
-#   params
-#   .require(:project)
-#   .permit(:name, tasks_attributes: [:title, :_destroy, :id])
-# end
 end
