@@ -1,3 +1,3 @@
 class TestimonialSerializer < ActiveModel::Serializer
-  attributes :id
+  attributes :id, :name, :text
 end

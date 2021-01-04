@@ -1,3 +1,3 @@
 class EducationSerializer < ActiveModel::Serializer
-  attributes :id
+  attributes :id, :school, :degree, :graduated, :description
 end

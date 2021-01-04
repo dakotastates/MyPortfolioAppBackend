@@ -1,3 +1,3 @@
 class SocialSerializer < ActiveModel::Serializer
-  attributes :id
+  attributes :id, :name, :url, :className
 end
