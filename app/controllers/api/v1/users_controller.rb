@@ -1,80 +1,83 @@
 class Api::V1::UsersController < ApplicationController
 
-  skip_before_action :authorized, only: [:index, :create, :show, :update]
-  before_action :find_user, only:[:show, :update, :destroy]
-
-  def index
-    @users = User.all
-    render json: @users
-  end
-
-  def show
-      render json: @user
-
-  end
-
-  private
-
-  def user_params
-    # params { user: {username: 'Chandler Bing', password: 'hi' } }
-    params.require(:user).permit(:name)
-  end
-
-  def find_user
-    @user = User.find_by_id(params[:id])
-  end
-  # include Rails.application.routes.url_helpers
-  # skip_before_action :authorized, only: [:create, :show, :update, :profile]
+  # skip_before_action :authorized, only: [:index, :create, :show, :update]
   # before_action :find_user, only:[:show, :update, :destroy]
-  # # include Rails.application.routes.url_helpers
   #
-  # # def profile
-  # #   render json: { user: UserSerializer.new(current_user) }, status: :accepted
-  # # end
-  #
-  # # def index
-  # #   @users = User.all
-  # #   render json: @users
-  # # end
+  # def index
+  #   @users = User.all
+  #   render json: @users
+  # end
   #
   # def show
-  #     render json: user_json(@user)
+  #     render json: @user
   #
-  # end
-  #
-  #
-  # # def create
-  # #   @user = User.create(user_params)
-  # #
-  # #   if @user.valid?
-  # #     @token = encode_token({ user_id: @user.id })
-  # #     render json: { user: UserSerializer.new(@user), jwt: @token }, status: :created
-  # #   else
-  # #     # render json: { error: 'failed to create user' }, status: :not_acceptable
-  # #     render json: { error: @user.errors.full_messages }, status: :not_acceptable
-  # #   end
-  # # end
-  #
-  # def update
-  #   byebug
-  #
-  #   @user.attributes = user_params
-  #   # @user.featured_image = params[:user][:featured_image]
-  #   # @user.featured_image.attach(@user.featured_image)
-  #   # @user.featured_image.attach(params[:file])
-  #   # byebug
-  #   result = @user.save
-  #   render json: user_json(@user), status: result ? 200 : 422
-  #
-  # end
-  #
-  # def destroy
-  #   @user.destroy
-  #   render json: { result: :ok }
   # end
   #
   # private
   #
+  # def user_params
+  #   # params { user: {username: 'Chandler Bing', password: 'hi' } }
+  #   params.require(:user).permit(:name)
+  # end
+  #
+  # def find_user
+  #   @user = User.find_by_id(params[:id])
+  # end
+  # include Rails.application.routes.url_helpers
+  skip_before_action :authorized, only: [:create, :show, :update, :profile]
+  before_action :find_user, only:[:show, :update, :destroy]
+  # include Rails.application.routes.url_helpers
+
+  # def profile
+  #   render json: { user: UserSerializer.new(current_user) }, status: :accepted
+  # end
+
+  # def index
+  #   @users = User.all
+  #   render json: @users
+  # end
+
+  def show
+      # render json: user_json(@user)
+      render json: @user
+
+
+  end
+
+
+  # def create
+  #   @user = User.create(user_params)
+  #
+  #   if @user.valid?
+  #     @token = encode_token({ user_id: @user.id })
+  #     render json: { user: UserSerializer.new(@user), jwt: @token }, status: :created
+  #   else
+  #     # render json: { error: 'failed to create user' }, status: :not_acceptable
+  #     render json: { error: @user.errors.full_messages }, status: :not_acceptable
+  #   end
+  # end
+
+  def update
+    byebug
+
+    @user.attributes = user_params
+    # @user.featured_image = params[:user][:featured_image]
+    # @user.featured_image.attach(@user.featured_image)
+    # @user.featured_image.attach(params[:file])
+    # byebug
+    result = @user.save
+    # render json: user_json(@user), status: result ? 200 : 422
+    render json: @user, status: result ? 200 : 422
+
+  end
+
+  def destroy
+    @user.destroy
+    render json: { result: :ok }
+  end
+
+  private
+
   # def user_json(user)
   #   {
   #     id: user.id,
@@ -175,21 +178,21 @@ class Api::V1::UsersController < ApplicationController
   #     }
   #   end
   # end
-  #
-  #
-  # def user_params
-  #   params.permit( :id, :username, :password, :name, :occupation, :description, :image, :featured_image, :bio, :contactmessage, :email, :phone, :website, :resumedownload,
-  #     address_attributes: [:id, :street, :city, :state, :zip],
-  #     socials_attributes: [:id, :name, :url, :className, :user_id, :_destroy],
-  #     projects_attributes: [:id, :title, :category, :image, :url, :user_id, :_destroy],
-  #     educations_attributes: [:id, :school, :degree, :graduated, :description, :user_id, :_destroy],
-  #     works_attributes: [:id, :company, :title, :years, :description, :user_id, :_destroy],
-  #     skills_attributes: [:id, :name, :level, :user_id, :_destroy],
-  #     testimonials_attributes: [:id, :text, :name, :user_id, :_destroy])
-  # end
-  #
-  # def find_user
-  #   @user = User.find_by_id(params[:id])
-  # end
+
+
+  def user_params
+    params.permit( :id, :username, :password, :name, :occupation, :description, :image, :featured_image, :bio, :contactmessage, :email, :phone, :website, :resumedownload,
+      address_attributes: [:id, :street, :city, :state, :zip],
+      socials_attributes: [:id, :name, :url, :className, :user_id, :_destroy],
+      projects_attributes: [:id, :title, :category, :image, :url, :user_id, :_destroy],
+      educations_attributes: [:id, :school, :degree, :graduated, :description, :user_id, :_destroy],
+      works_attributes: [:id, :company, :title, :years, :description, :user_id, :_destroy],
+      skills_attributes: [:id, :name, :level, :user_id, :_destroy],
+      testimonials_attributes: [:id, :text, :name, :user_id, :_destroy])
+  end
+
+  def find_user
+    @user = User.find_by_id(params[:id])
+  end
 
 end
