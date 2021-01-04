@@ -1,4 +1,5 @@
 class Api::V1::UsersController < ApplicationController
+  include Rails.application.routes.url_helpers
   skip_before_action :authorized, only: [:create, :show, :update, :profile]
   before_action :find_user, only:[:show, :update, :destroy]
   # include Rails.application.routes.url_helpers
@@ -31,9 +32,12 @@ class Api::V1::UsersController < ApplicationController
   # end
 
   def update
-    # byebug
+    byebug
 
     @user.attributes = user_params
+    # @user.featured_image = params[:user][:featured_image]
+    # @user.featured_image.attach(@user.featured_image)
+    # @user.featured_image.attach(params[:file])
     # byebug
     result = @user.save
     render json: user_json(@user), status: result ? 200 : 422
@@ -56,7 +60,7 @@ class Api::V1::UsersController < ApplicationController
       image: user.image,
       # featured_image()
       # image: image(user),
-      # featured_image: featured_image,
+      featured_image: featured_image(user),
       # featured_image: rails_blob_url(user.featured_image),
       bio: user.bio,
       contactmessage: user.contactmessage,
@@ -79,7 +83,7 @@ class Api::V1::UsersController < ApplicationController
           category: project.category,
           image: project.image,
           url: project.url,
-          errors: project.errors,
+          # errors: project.errors,
           _destroy: project._destroy
         }
       end,
@@ -137,9 +141,20 @@ class Api::V1::UsersController < ApplicationController
 
   end
 
+  def featured_image(user)
+    # user.featured_image.attach(params[:featured_image])
+    # user.featured_image.attach(params[:file])
+    # byebug
+    if user.featured_image.attached?
+      {
+        url: rails_blob_url(user.featured_image)
+      }
+    end
+  end
+
 
   def user_params
-    params.require(:user).permit( :id, :username, :password, :name, :occupation, :description, :image, :featured_image, :bio, :contactmessage, :email, :phone, :website, :resumedownload,
+    params.permit( :id, :username, :password, :name, :occupation, :description, :image, :featured_image, :bio, :contactmessage, :email, :phone, :website, :resumedownload,
       address_attributes: [:id, :street, :city, :state, :zip],
       socials_attributes: [:id, :name, :url, :className, :user_id, :_destroy],
       projects_attributes: [:id, :title, :category, :image, :url, :user_id, :_destroy],
